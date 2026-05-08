@@ -25,12 +25,19 @@
     background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bot) 100%);
     position: relative;
   }
-  #stage {
+  #stage, #ribbons {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     display: block;
+  }
+  #ribbons {
+    pointer-events: none;
+    filter: blur(14px) saturate(1.18);
+    -webkit-filter: blur(14px) saturate(1.18);
+    mix-blend-mode: screen;
+    will-change: filter;
   }
   .switcher {
     position: absolute;
@@ -100,6 +107,7 @@
 </head>
 <body>
   <canvas id="stage"></canvas>
+  <canvas id="ribbons"></canvas>
 
   <div class="switcher" id="switcher" role="group" aria-label="Theme">
     <button type="button" class="switcher-btn is-active" data-theme="polar" aria-label="Green Polar" aria-pressed="true">
@@ -168,7 +176,7 @@
   let currentTheme = 'polar';
   let theme = THEMES[currentTheme];
 
-  const offCanvas = document.createElement('canvas');
+  const offCanvas = document.getElementById('ribbons');
   const offCtx = offCanvas.getContext('2d');
 
   const audio = (() => {
@@ -468,18 +476,6 @@
       if (r.age >= r.life) ribbons.splice(i, 1);
     }
     offCtx.restore();
-
-    ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.filter = 'blur(18px)';
-    ctx.globalAlpha = 0.6;
-    ctx.drawImage(offCanvas, 0, 0, W, H);
-    ctx.filter = 'blur(6px)';
-    ctx.globalAlpha = 0.7;
-    ctx.drawImage(offCanvas, 0, 0, W, H);
-    ctx.filter = 'none';
-    ctx.globalAlpha = 1;
-    ctx.restore();
   }
 
   function drawRibbon(c, r, time, alpha) {
