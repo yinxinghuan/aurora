@@ -194,9 +194,9 @@
       moon:  { freqs: [110.00, 164.81, 261.63], cutoff: 520 }
     };
     const PENTAS = {
-      polar: [554.37, 622.25, 739.99, 830.61, 932.33, 1108.73],
-      dusk:  [698.46, 783.99, 880.00, 1046.50, 1174.66, 1396.91],
-      moon:  [880.00, 1046.50, 1174.66, 1318.51, 1567.98, 2093.00]
+      polar: [277.18, 311.13, 369.99, 415.30, 466.16, 554.37],
+      dusk:  [349.23, 392.00, 440.00, 523.25, 587.33, 698.46],
+      moon:  [220.00, 261.63, 293.66, 329.63, 392.00, 440.00]
     };
 
     function ensureContext() {
@@ -307,8 +307,8 @@
 
         const filt = ac.createBiquadFilter();
         filt.type = 'lowpass';
-        filt.frequency.value = 7500;
-        filt.Q.value = 0.5;
+        filt.frequency.value = 4000;
+        filt.Q.value = 0.7;
 
         const o1 = ac.createOscillator();
         o1.type = 'sine';
@@ -316,18 +316,18 @@
 
         const o2 = ac.createOscillator();
         o2.type = 'sine';
-        o2.frequency.value = f * 2;
+        o2.frequency.value = f * 1.5;
         const g2 = ac.createGain();
-        g2.gain.value = 0.28;
+        g2.gain.value = 0.18;
 
         o1.connect(g);
         o2.connect(g2); g2.connect(g);
         g.connect(filt); filt.connect(masterGain);
 
         const peak = 0.075 + Math.random() * 0.035;
-        const decay = 0.85 + Math.random() * 0.55;
+        const decay = 1.4 + Math.random() * 0.8;
         g.gain.setValueAtTime(0, t);
-        g.gain.linearRampToValueAtTime(peak, t + 0.006);
+        g.gain.linearRampToValueAtTime(peak, t + 0.025);
         g.gain.exponentialRampToValueAtTime(0.0001, t + decay);
 
         o1.start(t); o2.start(t);
