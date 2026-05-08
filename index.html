@@ -32,36 +32,50 @@
     height: 100%;
     display: block;
   }
-  .theme-switcher {
+  .switcher {
     position: absolute;
-    top: 18px;
-    right: 18px;
+    top: max(20px, env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    gap: 8px;
+    gap: 4px;
+    padding: 5px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.18);
     z-index: 10;
+    -webkit-tap-highlight-color: transparent;
   }
-  .theme-dot {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 1.5px solid rgba(255,255,255,0.35);
+  .switcher-btn {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    background: transparent;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    transition: transform 0.18s ease, border-color 0.18s ease;
+    color: rgba(232, 236, 226, 0.55);
+    opacity: 1;
+    transition: color 0.32s ease, background 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    padding: 0;
   }
-  .theme-dot.active {
-    transform: scale(1.12);
-    border-color: rgba(255,255,255,0.95);
-    box-shadow: 0 0 12px currentColor;
+  .switcher-btn:hover { color: rgba(232, 236, 226, 0.85); }
+  .switcher-btn.is-active {
+    color: rgba(248, 250, 240, 0.96);
+    background: rgba(255, 255, 255, 0.16);
   }
-  .theme-dot[data-theme="polar"]   { background: radial-gradient(circle, #6effb0 0%, #1a8a5c 70%); color: #6effb0; }
-  .theme-dot[data-theme="dusk"]    { background: radial-gradient(circle, #ffb3e1 0%, #b04a8e 70%); color: #ffb3e1; }
-  .theme-dot[data-theme="moon"]    { background: radial-gradient(circle, #9bc0ff 0%, #2c4d9a 70%); color: #9bc0ff; }
+  .switcher-btn svg { display: block; }
 
   .brand {
     position: absolute;
-    bottom: 28px;
+    bottom: calc(max(20px, env(safe-area-inset-bottom)) + 14px);
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -79,31 +93,33 @@
     text-transform: uppercase;
     text-shadow: 0 0 12px rgba(0,0,0,0.55);
   }
-  .watermark {
-    position: absolute;
-    bottom: 14px;
-    left: 14px;
-    width: 56px;
-    opacity: 0.35;
-    pointer-events: none;
-    z-index: 9;
-  }
 </style>
 </head>
 <body>
   <canvas id="stage"></canvas>
 
-  <div class="theme-switcher" id="switcher">
-    <div class="theme-dot active" data-theme="polar" aria-label="Green Polar"></div>
-    <div class="theme-dot" data-theme="dusk" aria-label="Pink Dusk"></div>
-    <div class="theme-dot" data-theme="moon" aria-label="Blue Moon"></div>
+  <div class="switcher" id="switcher" role="group" aria-label="Theme">
+    <button type="button" class="switcher-btn is-active" data-theme="polar" aria-label="Green Polar" aria-pressed="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+        <path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/>
+      </svg>
+    </button>
+    <button type="button" class="switcher-btn" data-theme="dusk" aria-label="Pink Dusk" aria-pressed="false">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 10V2"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m16 6-4 4-4-4"/><path d="M16 18a4 4 0 0 0-8 0"/>
+      </svg>
+    </button>
+    <button type="button" class="switcher-btn" data-theme="moon" aria-label="Blue Moon" aria-pressed="false">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
   </div>
 
   <div class="brand">
     <div class="brand-title">A U R O R A</div>
   </div>
-
-  <img class="watermark" src="./img/aigram.svg" alt="" />
 
 <script>
 (() => {
@@ -150,6 +166,170 @@
 
   const offCanvas = document.createElement('canvas');
   const offCtx = offCanvas.getContext('2d');
+
+  const audio = (() => {
+    let ac = null;
+    let masterGain = null;
+    let started = false;
+    let padHandle = null;
+    let activeVoices = 0;
+    const VOICE_CAP = 5;
+    let lastVoiceAt = 0;
+
+    const PADS = {
+      polar: { freqs: [138.59, 207.65, 329.63], cutoff: 600 },
+      dusk:  { freqs: [174.61, 261.63, 440.00], cutoff: 700 },
+      moon:  { freqs: [110.00, 164.81, 261.63], cutoff: 520 }
+    };
+    const PENTAS = {
+      polar: [554.37, 622.25, 739.99, 830.61, 932.33, 1108.73],
+      dusk:  [698.46, 783.99, 880.00, 1046.50, 1174.66, 1396.91],
+      moon:  [880.00, 1046.50, 1174.66, 1318.51, 1567.98, 2093.00]
+    };
+
+    function ensureContext() {
+      if (!ac) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return false;
+        ac = new AC();
+        masterGain = ac.createGain();
+        masterGain.gain.value = 1;
+        masterGain.connect(ac.destination);
+      }
+      if (!started) {
+        if (ac.state !== 'running') ac.resume();
+        started = true;
+      }
+      return ac.state === 'running';
+    }
+
+    function buildPad(themeName) {
+      const cfg = PADS[themeName];
+      const t = ac.currentTime;
+      const out = ac.createGain();
+      out.gain.value = 0;
+
+      const filt = ac.createBiquadFilter();
+      filt.type = 'lowpass';
+      filt.frequency.value = cfg.cutoff;
+      filt.Q.value = 0.6;
+      filt.connect(out);
+
+      const oscs = cfg.freqs.map((f, i) => {
+        const o = ac.createOscillator();
+        o.type = 'sine';
+        o.frequency.value = f * (1 + (Math.random() - 0.5) * 0.004);
+        const g = ac.createGain();
+        g.gain.value = (1 / cfg.freqs.length) * (1 - i * 0.15);
+        o.connect(g); g.connect(filt);
+        o.start(t);
+        return { o, g };
+      });
+
+      const lfo = ac.createOscillator();
+      lfo.type = 'sine';
+      lfo.frequency.value = 0.08;
+      const lfoGain = ac.createGain();
+      lfoGain.gain.value = 0.012;
+      lfo.connect(lfoGain);
+      lfoGain.connect(out.gain);
+      lfo.start(t);
+
+      out.connect(masterGain);
+      out.gain.setValueAtTime(0, t);
+      out.gain.linearRampToValueAtTime(0.045, t + 2.5);
+
+      return { out, filt, oscs, lfo, lfoGain };
+    }
+
+    function destroyPad(handle, fadeMs = 1500) {
+      if (!handle) return;
+      const t = ac.currentTime;
+      handle.out.gain.cancelScheduledValues(t);
+      handle.out.gain.setValueAtTime(handle.out.gain.value, t);
+      handle.out.gain.linearRampToValueAtTime(0, t + fadeMs / 1000);
+      const stopAt = t + fadeMs / 1000 + 0.05;
+      handle.oscs.forEach(({ o }) => { try { o.stop(stopAt); } catch(e){} });
+      try { handle.lfo.stop(stopAt); } catch(e){}
+      setTimeout(() => {
+        try {
+          handle.oscs.forEach(({ o, g }) => { o.disconnect(); g.disconnect(); });
+          handle.lfo.disconnect(); handle.lfoGain.disconnect();
+          handle.filt.disconnect(); handle.out.disconnect();
+        } catch(e){}
+      }, fadeMs + 200);
+    }
+
+    return {
+      onFirstGesture(themeName) {
+        if (!ensureContext()) return;
+        setTimeout(() => {
+          if (!ac || ac.state !== 'running') return;
+          if (padHandle) return;
+          padHandle = buildPad(themeName);
+        }, 800);
+      },
+      switchPad(newTheme) {
+        if (!ac || ac.state !== 'running') return;
+        if (!padHandle) {
+          padHandle = buildPad(newTheme);
+          return;
+        }
+        destroyPad(padHandle, 1400);
+        padHandle = buildPad(newTheme);
+      },
+      twinkle(themeName) {
+        if (!ac || ac.state !== 'running') return;
+        if (activeVoices >= VOICE_CAP) return;
+        const now = performance.now();
+        if (now - lastVoiceAt < 220) return;
+        if (Math.random() < 0.18) return;
+        lastVoiceAt = now;
+
+        const penta = PENTAS[themeName];
+        const f = penta[Math.floor(Math.random() * penta.length)];
+        const t = ac.currentTime;
+
+        const g = ac.createGain();
+        g.gain.value = 0;
+
+        const filt = ac.createBiquadFilter();
+        filt.type = 'lowpass';
+        filt.frequency.value = 7500;
+        filt.Q.value = 0.5;
+
+        const o1 = ac.createOscillator();
+        o1.type = 'sine';
+        o1.frequency.value = f * (1 + (Math.random() - 0.5) * 0.003);
+
+        const o2 = ac.createOscillator();
+        o2.type = 'sine';
+        o2.frequency.value = f * 2;
+        const g2 = ac.createGain();
+        g2.gain.value = 0.28;
+
+        o1.connect(g);
+        o2.connect(g2); g2.connect(g);
+        g.connect(filt); filt.connect(masterGain);
+
+        const peak = 0.075 + Math.random() * 0.035;
+        const decay = 0.85 + Math.random() * 0.55;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(peak, t + 0.006);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + decay);
+
+        o1.start(t); o2.start(t);
+        o1.stop(t + decay + 0.05);
+        o2.stop(t + decay + 0.05);
+
+        activeVoices++;
+        setTimeout(() => {
+          activeVoices--;
+          try { o1.disconnect(); o2.disconnect(); g.disconnect(); g2.disconnect(); filt.disconnect(); } catch(e){}
+        }, (decay + 0.1) * 1000);
+      }
+    };
+  })();
 
   function resize() {
     W = window.innerWidth;
@@ -369,11 +549,14 @@
   }
 
   let lastTouchSpawn = 0;
+  let firstGesture = false;
   function onPointerDown(e) {
+    if (!firstGesture) { firstGesture = true; audio.onFirstGesture(currentTheme); }
     const x = e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? W / 2;
     if (performance.now() - lastTouchSpawn < 90) return;
     lastTouchSpawn = performance.now();
     spawnRibbon(x, 1, true);
+    audio.twinkle(currentTheme);
   }
   let isDragging = false;
   function onPointerMove(e) {
@@ -382,6 +565,7 @@
     lastTouchSpawn = performance.now();
     const x = e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? W / 2;
     spawnRibbon(x, 0.85, true);
+    audio.twinkle(currentTheme);
   }
 
   canvas.addEventListener('pointerdown', (e) => { isDragging = true; onPointerDown(e); });
@@ -391,13 +575,19 @@
   canvas.addEventListener('pointerleave',  () => { isDragging = false; });
 
   document.getElementById('switcher').addEventListener('pointerdown', (e) => {
-    const t = e.target.closest('.theme-dot');
+    const t = e.target.closest('.switcher-btn');
     if (!t) return;
     const name = t.dataset.theme;
     if (!THEMES[name]) return;
     currentTheme = name;
     theme = THEMES[name];
-    document.querySelectorAll('.theme-dot').forEach(d => d.classList.toggle('active', d === t));
+    document.querySelectorAll('.switcher-btn').forEach(d => {
+      const on = d === t;
+      d.classList.toggle('is-active', on);
+      d.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    if (!firstGesture) { firstGesture = true; audio.onFirstGesture(name); }
+    else audio.switchPad(name);
     e.stopPropagation();
   });
 
