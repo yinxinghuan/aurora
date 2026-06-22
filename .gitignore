@@ -1,5 +1,4 @@
-.DS_Store
 node_modules
 dist
-*.log
-.vscode
+_*.py
+.DS_Store
